@@ -5,6 +5,7 @@ import subprocess
 import math
 import digitalio
 import board
+import re
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_rgb_display.st7789 as st7789
 
@@ -130,42 +131,53 @@ TLintr = [[30, "30 seconds"],
 TLintrIndex = 1
 numShots = TLtime[TLtimeIndex][0]/TLintr[TLintrIndex][0]
 
+# Get the settings from the camera
+subprocess.check_output("bash /home/pi/CameraLogs/getSettings.sh", shell=True)
+cameraFile = open('cameraLog.txt', 'r')
+cameraText = cameraFile.read()
+print cameraText
+
 # Timelapse settings shutter speed
-TLsettingsTime = [[3, "1/2000"],
-             [6, "1/1000"],
-             [9, "1/500"],
-             [12, "1/250"],
-             [16, "1/100"],
-             [19, "1/50"],
-             [21, "1/30"],
-             [23, "1/20"],
-             [25, "1/13"],
-             [27, "1/8"],
-             [29, "1/5"],
-             [31, "1/3"],
-             [33, "1/2"],
-             [35, "1/1.3"],
-             [36, "1\""],
-             [37, "1.3\""],
-             [39, "2\""],
-             [41, "3\""],
-             [43, "5\""],
-             [44, "6\""],
-             [45, "8\""],
-             [46, "10\""],
-             [47, "13\""],
-             [48, "15\""],
-             [49, "20\""],
-             [50, "25\""],
-             [51, "30\""]]
+# TLsettingsTime = [[3, "1/2000"],
+             # [6, "1/1000"],
+             # [9, "1/500"],
+             # [12, "1/250"],
+             # [16, "1/100"],
+             # [19, "1/50"],
+             # [21, "1/30"],
+             # [23, "1/20"],
+             # [25, "1/13"],
+             # [27, "1/8"],
+             # [29, "1/5"],
+             # [31, "1/3"],
+             # [33, "1/2"],
+             # [35, "1/1.3"],
+             # [36, "1\""],
+             # [37, "1.3\""],
+             # [39, "2\""],
+             # [41, "3\""],
+             # [43, "5\""],
+             # [44, "6\""],
+             # [45, "8\""],
+             # [46, "10\""],
+             # [47, "13\""],
+             # [48, "15\""],
+             # [49, "20\""],
+             # [50, "25\""],
+             # [51, "30\""]]
              
-TLsettingsISO = [[3, "100"],
-             [6, "200"],
-             [9, "400"],
-             [12, "800"],
-             [15, "1600"],
-             [18, "3200"],
-             [21, "6400"]]
+# TLsettingsISO = [[3, "100"],
+#              [6, "200"],
+#              [9, "400"],
+#              [12, "800"],
+#              [15, "1600"],
+#              [18, "3200"],
+#              [21, "6400"]]
+
+loopStop = 0
+
+while loopStop == 0:
+    
              
 TLsettingsIndex = [6, 0]
 
