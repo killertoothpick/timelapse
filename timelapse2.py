@@ -135,7 +135,7 @@ numShots = TLtime[TLtimeIndex][0]/TLintr[TLintrIndex][0]
 subprocess.check_output("bash /home/pi/CameraLogs/getSettings.sh", shell=True)
 cameraFile = open('cameraLog.txt', 'r')
 cameraText = cameraFile.read()
-print(cameraText)
+# print(cameraText)
 
 # Timelapse settings shutter speed
 # TLsettingsTime = [[3, "1/2000"],
@@ -174,10 +174,66 @@ print(cameraText)
 #              [18, "3200"],
 #              [21, "6400"]]
 
-loopStop = 0
+# Getting the ISO list from camera
 
-while loopStop == 0:
+loopStoop = 0
+TLsettingsISO = []
+loopIndex = 0
+while loopStoop == 0:
+    ISOregex1 = 'ISO[\s\S]*?(?:Choice: (\d+) \d+\s){1,'+str(loopIndex+1)+'}[\s\S]*?END'
+    ISOregex2 = 'ISO[\s\S]*?(?:Choice: \d+ (\d+)\s){1,'+str(loopIndex+1)+'}[\s\S]*?END'
+    tempISO1 = re.findall(ISOregex1, cameraText)
+    tempISO2 = re.findall(ISOregex2, cameraText)
+    if loopIndex >= 1:
+        if [tempISO1, tempISO2] == TLsettingsISO[-1]:
+            loopStoop = 1
+        else:
+            TLsettingsISO.append([tempISO1, tempISO2])
+    else:
+        TLsettingsISO.append([tempISO1, tempISO2])
+    loopIndex = loopIndex + 1
     
+# Getting the Shutter speed list from camera    
+
+loopStoop = 0
+TLsettingsTime = []
+loopIndex = 0
+while loopStoop == 0:
+    TimeRegex1 = 'Shutter[\s\S]*?(?:Choice: (\d+) \d+\.\d+s\s){1,'+str(loopIndex+1)+'}[\s\S]*?END'
+    TimeRegex2 = 'Shutter[\s\S]*?(?:Choice: \d+ (\d+\.\d+)s\s){1,'+str(loopIndex+1)+'}[\s\S]*?END'
+    tempTime1 = re.findall(TimeRegex1, cameraText)
+    tempTime2 = re.findall(TimeRegex2, cameraText)
+    if loopIndex >= 1:
+        if [tempTime1, tempTime2] == TLsettingsTime[-1]:
+            loopStoop = 1
+        else:
+            TLsettingsTime.append([tempTime1, tempTime2])
+    else:
+        TLsettingsTime.append([tempTime1, tempTime2])
+    loopIndex = loopIndex + 1
+    
+# Getting the Aperture list from camera    
+
+loopStoop = 0
+TLsettingsF = []
+loopIndex = 0
+while loopStoop == 0:
+    FRegex1 = 'F-[\s\S]*?(?:Choice: (\d+) f\/\d+\.?\d?\s){1,'+str(loopIndex+1)+'}[\s\S]*?END'
+    FRegex2 = 'F-[\s\S]*?(?:Choice: \d+ f\/(\d+\.?\d?)\s){1,'+str(loopIndex+1)+'}[\s\S]*?END'
+    tempF1 = re.findall(FRegex1, cameraText)
+    tempF2 = re.findall(FRegex2, cameraText)
+    if loopIndex >= 1:
+        if [tempF1, tempF2] == TLsettingsF[-1]:
+            loopStoop = 1
+        else:
+            TLsettingsF.append([tempF1, tempF2])
+    else:
+        TLsettingsF.append([tempF1, tempF2])
+    loopIndex = loopIndex + 1
+
+print(TLsettingsTime)
+print(TLsettingsISO)
+print(TLsettingsF)
              
 TLsettingsIndex = [6, 0]
 
@@ -191,7 +247,7 @@ while go == 0:
 
     # Update display
     draw.rectangle((0, 120, 240, 150), outline=0, fill=(0, 0, 0))
-    draw.text((5,125), "Start: " + TLsettingsTime[TLsettingsIndex[0]][1] + ", ISO " + TLsettingsISO[TLsettingsIndex[1]][1], font=font, fill=whiteText)
+    draw.text((5,125), "Start: " + str(TLsettingsTime[TLsettingsIndex[0]][1]) + ", ISO " + str(TLsettingsISO[TLsettingsIndex[1]][1]), font=font, fill=whiteText)
     draw.rectangle((0, 150, 240, 180), outline=0, fill=(0, 0, 0))
     draw.text((5,155), "Start", font=font, fill=redText)
     draw.rectangle((0, 210, 119, 240), outline=0, fill=(150, 150, 150))
@@ -213,7 +269,7 @@ while go == 0:
     draw.rectangle((0, 150, 240, 180), outline=0, fill=(0, 0, 0))
     draw.text((5,155), "Start", font=font, fill=whiteText)
     draw.rectangle((0, 0, 240, 30), outline=0, fill=(0, 0, 0))
-    draw.text((5,5),"Duration: " + TLtime[TLtimeIndex][1], font=font, fill=redText)
+    draw.text((5,5),"Duration: " + str(TLtime[TLtimeIndex][1]), font=font, fill=redText)
     draw.rectangle((0, 210, 119, 240), outline=0, fill=(150, 150, 150))
     draw.rectangle((121, 210, 240, 240), outline=0, fill=(150, 150, 150))
     draw.text((10,215), "Change", font=font, fill=blackText)
@@ -229,7 +285,7 @@ while go == 0:
                 TLtimeIndex = -1
             TLtimeIndex = TLtimeIndex + 1
             draw.rectangle((0, 0, 240, 30), outline=0, fill=(0, 0, 0))
-            draw.text((5,5),"Duration: " + TLtime[TLtimeIndex][1], font=font, fill=redText)
+            draw.text((5,5),"Duration: " + str(TLtime[TLtimeIndex][1]), font=font, fill=redText)
             draw.rectangle((0, 180, 240, 210), outline=0, fill=(0, 0, 0))
             numShots = TLtime[TLtimeIndex][0]/TLintr[TLintrIndex][0]
             draw.text((5,185), str(int(numShots)) + " Shots", font=font, fill=greyText)
@@ -240,9 +296,9 @@ while go == 0:
         
     # Update display
     draw.rectangle((0, 0, 240, 30), outline=0, fill=(0, 0, 0))
-    draw.text((5,5),"Duration: " + TLtime[TLtimeIndex][1], font=font, fill=whiteText)
+    draw.text((5,5),"Duration: " + str(TLtime[TLtimeIndex][1]), font=font, fill=whiteText)
     draw.rectangle((0, 30, 240, 60), outline=0, fill=(0, 0, 0))
-    draw.text((5,35), "Interval: " + TLintr[TLintrIndex][1], font=font, fill=redText)
+    draw.text((5,35), "Interval: " + str(TLintr[TLintrIndex][1]), font=font, fill=redText)
     
     # Deciding timelapse interval
     while not buttonB.value:
@@ -254,7 +310,7 @@ while go == 0:
                 TLintrIndex = -1
             TLintrIndex = TLintrIndex + 1
             draw.rectangle((0, 30, 240, 60), outline=0, fill=(0, 0, 0))
-            draw.text((5,35), "Interval: " + TLintr[TLintrIndex][1], font=font, fill=redText)
+            draw.text((5,35), "Interval: " + str(TLintr[TLintrIndex][1]), font=font, fill=redText)
             draw.rectangle((0, 180, 240, 210), outline=0, fill=(0, 0, 0))
             numShots = TLtime[TLtimeIndex][0]/TLintr[TLintrIndex][0]
             draw.text((5,185), str(int(numShots)) + " Shots", font=font, fill=greyText)
@@ -265,9 +321,9 @@ while go == 0:
         
     # Update display
     draw.rectangle((0, 30, 240, 60), outline=0, fill=(0, 0, 0))
-    draw.text((5,35), "Interval: " + TLintr[TLintrIndex][1], font=font, fill=whiteText)
+    draw.text((5,35), "Interval: " + str(TLintr[TLintrIndex][1]), font=font, fill=whiteText)
     draw.rectangle((0, 60, 240, 90), outline=0, fill=(0, 0, 0))
-    draw.text((5,65), "Max Shutter: " + TLsettingsTime[maxShutter][1], font=font, fill=redText)
+    draw.text((5,65), "Max Shutter: " + str(TLsettingsTime[maxShutter][1]), font=font, fill=redText)
     
     # Deciding Max Shutter
     while not buttonB.value:
@@ -279,7 +335,7 @@ while go == 0:
                 maxShutter = -1
             maxShutter = maxShutter + 1
             draw.rectangle((0, 60, 240, 90), outline=0, fill=(0, 0, 0))
-            draw.text((5,65), "Max Shutter: " + TLsettingsTime[maxShutter][1], font=font, fill=redText)
+            draw.text((5,65), "Max Shutter: " + str(TLsettingsTime[maxShutter][1]), font=font, fill=redText)
             disp.image(image, rotation)
             while not buttonA.value:
                 time.sleep(0.01)
@@ -287,9 +343,9 @@ while go == 0:
     
     # Update display
     draw.rectangle((0, 60, 240, 90), outline=0, fill=(0, 0, 0))
-    draw.text((5,65), "Max Shutter: " + TLsettingsTime[maxShutter][1], font=font, fill=whiteText)
+    draw.text((5,65), "Max Shutter: " + str(TLsettingsTime[maxShutter][1]), font=font, fill=whiteText)
     draw.rectangle((0, 90, 240, 120), outline=0, fill=(0, 0, 0))
-    draw.text((5,95), "Max ISO: " + TLsettingsISO[maxISO][1], font=font, fill=redText)
+    draw.text((5,95), "Max ISO: " + str(TLsettingsISO[maxISO][1]), font=font, fill=redText)
     
     # Deciding Max ISO
     while not buttonB.value:
@@ -301,7 +357,7 @@ while go == 0:
                 maxISO = -1
             maxISO = maxISO + 1
             draw.rectangle((0, 90, 240, 120), outline=0, fill=(0, 0, 0))
-            draw.text((5,95), "Max ISO: " + TLsettingsISO[maxISO][1], font=font, fill=redText)
+            draw.text((5,95), "Max ISO: " + str(TLsettingsISO[maxISO][1]), font=font, fill=redText)
             disp.image(image, rotation)
             while not buttonA.value:
                 time.sleep(0.01)
@@ -309,9 +365,9 @@ while go == 0:
     
     # Update display
     draw.rectangle((0, 90, 240, 120), outline=0, fill=(0, 0, 0))
-    draw.text((5,95), "Max ISO: " + TLsettingsISO[maxISO][1], font=font, fill=whiteText)
+    draw.text((5,95), "Max ISO: " + str(TLsettingsISO[maxISO][1]), font=font, fill=whiteText)
     draw.rectangle((0, 120, 240, 150), outline=0, fill=(0, 0, 0))
-    draw.text((5,125), "Start: " + TLsettingsTime[TLsettingsIndex[0]][1] + ", ISO " + TLsettingsISO[TLsettingsIndex[1]][1], font=font, fill=redText)
+    draw.text((5,125), "Start: " + str(TLsettingsTime[TLsettingsIndex[0]][1]) + ", ISO " + str(TLsettingsISO[TLsettingsIndex[1]][1]), font=font, fill=redText)
     
     # Deciding timelapse initial settings
     while not buttonB.value:
@@ -327,7 +383,7 @@ while go == 0:
                 TLsettingsIndex[0] = 0
                 TLsettingsIndex[1] = 0
             draw.rectangle((0, 120, 240, 150), outline=0, fill=(0, 0, 0))
-            draw.text((5,125), "Start: " + TLsettingsTime[TLsettingsIndex[0]][1] + ", ISO " + TLsettingsISO[TLsettingsIndex[1]][1], font=font, fill=redText)
+            draw.text((5,125), "Start: " + str(TLsettingsTime[TLsettingsIndex[0]][1]) + ", ISO " + str(TLsettingsISO[TLsettingsIndex[1]][1]), font=font, fill=redText)
             disp.image(image, rotation)
             while not buttonA.value:
                 time.sleep(0.01)
