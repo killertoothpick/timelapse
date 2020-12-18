@@ -135,7 +135,7 @@ numShots = TLtime[TLtimeIndex][0]/TLintr[TLintrIndex][0]
 subprocess.check_output("bash /home/pi/CameraLogs/getSettings.sh", shell=True)
 cameraFile = open('cameraLog.txt', 'r')
 cameraText = cameraFile.read()
-print cameraText
+print(cameraText)
 
 # Timelapse settings shutter speed
 # TLsettingsTime = [[3, "1/2000"],
