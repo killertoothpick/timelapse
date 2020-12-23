@@ -274,12 +274,13 @@ while go == 0:
     draw.rectangle((121, 210, 240, 240), outline=0, fill=(150, 150, 150))
     draw.text((10,215), "Change", font=font, fill=blackText)
     draw.text((130,215), "Next", font=font, fill=blackText)
+    disp.image(image, rotation)
     
     # Deciding timelapse duration
     while not buttonB.value:
         time.sleep(0.01)
     while buttonB.value and go == 0:
-        disp.image(image, rotation)
+        # disp.image(image, rotation)
         if not buttonA.value:
             if TLtimeIndex == 7:
                 TLtimeIndex = -1
@@ -299,12 +300,13 @@ while go == 0:
     draw.text((5,5),"Duration: " + str(TLtime[TLtimeIndex][1]), font=font, fill=whiteText)
     draw.rectangle((0, 30, 240, 60), outline=0, fill=(0, 0, 0))
     draw.text((5,35), "Interval: " + str(TLintr[TLintrIndex][1]), font=font, fill=redText)
+    disp.image(image, rotation)
     
     # Deciding timelapse interval
     while not buttonB.value:
         time.sleep(0.01)
     while buttonB.value and go == 0:
-        disp.image(image, rotation)
+        # disp.image(image, rotation)
         if not buttonA.value:
             if TLintrIndex == 6 or TLintr[TLintrIndex+1][0] >= TLtime[TLtimeIndex][0]:
                 TLintrIndex = -1
@@ -324,12 +326,13 @@ while go == 0:
     draw.text((5,35), "Interval: " + str(TLintr[TLintrIndex][1]), font=font, fill=whiteText)
     draw.rectangle((0, 60, 240, 90), outline=0, fill=(0, 0, 0))
     draw.text((5,65), "Max Shutter: " + str(TLsettingsTime[maxShutter][1]), font=font, fill=redText)
+    disp.image(image, rotation)
     
     # Deciding Max Shutter
     while not buttonB.value:
         time.sleep(0.01)
     while buttonB.value and go == 0:
-        disp.image(image, rotation)
+        # disp.image(image, rotation)
         if not buttonA.value:
             if maxShutter == 26:
                 maxShutter = -1
@@ -346,12 +349,13 @@ while go == 0:
     draw.text((5,65), "Max Shutter: " + str(TLsettingsTime[maxShutter][1]), font=font, fill=whiteText)
     draw.rectangle((0, 90, 240, 120), outline=0, fill=(0, 0, 0))
     draw.text((5,95), "Max ISO: " + str(TLsettingsISO[maxISO][1]), font=font, fill=redText)
+    disp.image(image, rotation)
     
     # Deciding Max ISO
     while not buttonB.value:
         time.sleep(0.01)
     while buttonB.value and go == 0:
-        disp.image(image, rotation)
+        # disp.image(image, rotation)
         if not buttonA.value:
             if maxISO == 6:
                 maxISO = -1
@@ -368,12 +372,13 @@ while go == 0:
     draw.text((5,95), "Max ISO: " + str(TLsettingsISO[maxISO][1]), font=font, fill=whiteText)
     draw.rectangle((0, 120, 240, 150), outline=0, fill=(0, 0, 0))
     draw.text((5,125), "Start: " + str(TLsettingsTime[TLsettingsIndex[0]][1]) + ", ISO " + str(TLsettingsISO[TLsettingsIndex[1]][1]), font=font, fill=redText)
+    disp.image(image, rotation)
     
     # Deciding timelapse initial settings
     while not buttonB.value:
         time.sleep(0.01)
     while buttonB.value and go == 0:
-        disp.image(image, rotation)
+        # disp.image(image, rotation)
         if not buttonA.value:
             if TLsettingsIndex[0] < maxShutter:
                 TLsettingsIndex[0] = TLsettingsIndex[0] + 1
